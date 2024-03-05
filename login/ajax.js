@@ -1,7 +1,7 @@
 
 function Login() {
     const email = $("#email").val();
-    const pass = $("#lpass").val();
+    const pass = $("#pass").val();
     $.ajax({
         url: "login.php",
         method: "POST",
@@ -16,7 +16,12 @@ function Login() {
                 swal("Good job!", "Login Successful", "success");
                 $('#LoginModal').modal('toggle');
                 setTimeout(() => {
-                    window.location.href = "index.php";
+                    if (email=='admin') {
+                        window.location.href = "../admin/index.php";
+                    }else{
+                        window.location.href = "../college/dashboard.php";
+                    }
+                    
                 }, 1000)
             }
             else {

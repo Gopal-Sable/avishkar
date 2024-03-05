@@ -7,9 +7,9 @@ if (!$con) {
   die("Connectioin Failed");
 }
 // login verification
-if (!isset($_SESSION['user'])) {
-  if (isset($_POST["username"], $_POST["pass"])) {
-    $user = $_POST["username"];
+// if (!isset($_SESSION['user'])) {
+  if (isset($_POST["email"], $_POST["pass"])) {
+    $user = $_POST["email"];
     $pass = $_POST["pass"];
 
 
@@ -24,20 +24,20 @@ if (!isset($_SESSION['user'])) {
 
 
 
-    $sql = "select admin_email,admin_pass from Admin where admin_email='" . $user . "' AND admin_pass='" . $pass . "'";
-    $result = $con->query($sql);
-    $row = $result->num_rows;
-    if ($row === 1) {
+    // $sql = "select admin_email,admin_pass from Admin where admin_email='" . $user . "' AND admin_pass='" . $pass . "'";
+    // $result = $con->query($sql);
+    // $row = $result->num_rows;
+    // if ($row === 1) {
       if ($user == 'admin') {
         $_SESSION['is_admin'] = true;
-        $_SESSION['user'] = $user;
-        echo json_encode($row);
+        $_SESSION['user'] = "admin";
+        echo json_encode(1);
       } else {
         $_SESSION['is_admin'] = false;
-        $_SESSION['user'] = $result['collegeName'];
+        $_SESSION['user'] =$user; //$result['collegeName'];
       }
     } else if ($row === 0) {
-      echo json_encode($row);
+      echo json_encode(0);
     }
-  }
-}
+  // }
+// }

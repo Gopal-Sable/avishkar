@@ -1,8 +1,9 @@
 <?php
 session_start();
-$_SESSION['user_id']='temprary';
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+// $_SESSION['is_admin'] = true;
+// $_SESSION['user'] = 'temp';
+if (!isset($_SESSION['user']) && !$_SESSION['is_admin']) {
+    header("Location: ../login/login.html");
     exit();
 }
 require_once("header.php");
