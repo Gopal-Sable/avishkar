@@ -1,4 +1,12 @@
 <?php
+session_start();
+if (!isset($_SESSION['user']) || $_SESSION['is_admin'] != true) {
+    header("Location: ../login/login.html");
+    exit();
+}
+require_once("header.php");
+require_once("Navbar.php");
+
 require_once('../connection.php');
 $q = "SELECT s.id, s.name AS student_name, c.name AS clg_name, l.name AS level_name, p.theme AS project_theme, t.category AS project_category
 FROM student s
@@ -8,77 +16,60 @@ LEFT JOIN project p ON s.project_id = p.id
 LEFT JOIN themes t ON p.theme = t.id; ";
 $result = mysqli_query($con, $q);
 
+
 ?>
+<div id="page-content" class="col-sm-10 mt-5 text-center">
 
-<h1>students - <?php echo $result->num_rows ?></h1>
-
-
-
-<!-- table -->
-<p class="bg-dark text-white my-4 p-2">List Of Students</p>
+    <h1>students - <?php echo $result->num_rows ?></h1>
+    <!-- table -->
+    <p class="bg-dark text-white my-4 p-2">List Of Students</p>
 
 
-<table id="myTable" class=" table table-striped table-responsive table-hover table-bordered">
-    <thead>
-        <tr>
-            <th class="col">ID</th>
-            <th class="col">Name</th>
-            <th class="col">College</th>
-            <th class="col">Category</th>
-            <th class="col">Level</th>
-            <th class="col">Action</th>
+    <table id="myTable" class=" table table-striped table-responsive table-hover table-bordered">
+        <thead>
+            <tr>
+                <th class="col">ID</th>
+                <th class="col">Name</th>
+                <th class="col">College</th>
+                <th class="col">Category</th>
+                <th class="col">Level</th>
 
-        </tr>
-    </thead>
-    <tbody>
-        <?php 
-         if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) { 
-        ?>
-        <tr>
-            <th scope="row"><?php echo $row['id'] ?></th>
-            <td><?php echo $row['student_name'] ?></td>
-            <td><?php echo $row['clg_name'] ?></td>
-            <td><?php echo $row['project_category'] ?></td>
-            <td><?php echo $row['level_name'] ?></td>
-            <td>
-                <form action="" class="d-inline" method="post">
-                    <input type="hidden" name="id" value="<?php echo $row['id'] ?>">
-                    <button type="submit" class="btn btn-primary mr-3" name="submit" value="submit"><i class="fas fa-pen"></i></button>
-                </form>
-                <form action="" class="d-inline" method="post">
-                    <input type="hidden" name="id" value="<?php echo $row['id']?>">
-                    <button type="submit" class="btn btn-danger" name="delete" value="Delete"><i class="far fa-trash-alt"></i></button>
-                </form>
-            </td>
-        </tr>
-        
-        <?php } 
-        ?>
-    </tbody>
-</table>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+            ?>
+                    <tr>
+                        <th scope="row"><?php echo $row['id'] ?></th>
+                        <td><?php echo $row['student_name'] ?></td>
+                        <td><?php echo $row['clg_name'] ?></td>
+                        <td><?php echo $row['project_category'] ?></td>
+                        <td><?php echo $row['level_name'] ?></td>
+                    </tr>
+
+                <?php }
+                ?>
+        </tbody>
+    </table>
 <?php
- } //else {
-//     echo "No Data Found";
-// }
-// if (isset($_POST['delete'])) {
-//     $q = "delete from students where id= {$_REQUEST['id']}";
-//     if (mysqli_query($con, $q)) {
-//         echo '<meta http-equiv="refresh" content"0;URL=?deleted"/>';
-//     } else {
-//         echo '<script>swal("Oops..", "Something went wrong!", "error")</script>';
-//     }
-// }
+            }
 
 ?>
-<a href="">Download</a> | <a href="">Publish</a>
 
 <div>
     <a href="#" class="btn btn-danger box"><i class="fas fa-plus fa-2x"></i></a>
 </div>
 
+<a href="">Download</a> | <a href="">Publish</a>
 <script>
     $(document).ready(function() {
         $('#myTable').DataTable();
     });
 </script>
+</div>
+
+<?php
+require_once("footer.php");
+?>

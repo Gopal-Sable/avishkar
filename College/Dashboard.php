@@ -1,9 +1,6 @@
 <?php
-if (!isset($_SESSION)) {
   session_start();
-  $_SESSION['user'] = 'geca';
-}
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['user'])||$_SESSION['is_admin']==true) {
   header("location: ../index.php");
 }
 require_once('header.php');

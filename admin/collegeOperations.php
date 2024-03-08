@@ -98,4 +98,22 @@ if (isset($_POST['add'])) {
     $deleteStudentsStmt->close();
     $deleteCollegeStmt->close();
 }
+// Check if update request is submitted
+elseif(isset($_POST['update']) && $_POST['update'] == 'ok') {
+    $collegeId = $_POST['collegeId'];
+    $newCollegeName = $_POST['collegeName'];
+
+    // Perform update operation in your database
+    $updateQuery = "UPDATE college SET name = '$newCollegeName' WHERE id = $collegeId";
+    $updateResult = mysqli_query($con, $updateQuery);
+
+    if($updateResult) {
+        echo "College updated successfully.";
+    } else {
+        echo "Error: " . mysqli_error($con);
+    }
+
+    exit(); // Terminate the script after processing update request
+}
+
 ?>

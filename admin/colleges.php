@@ -1,4 +1,12 @@
 <?php
+session_start();
+if (!isset($_SESSION['user']) || $_SESSION['is_admin'] != true) {
+    header("Location: ../login/login.html");
+    exit();
+}
+require_once("header.php");
+require_once("Navbar.php");
+
 require_once('../connection.php');
 $q = "SELECT c.id, c.name, COUNT(s.id) AS student_count
     FROM college c
@@ -7,62 +15,85 @@ $q = "SELECT c.id, c.name, COUNT(s.id) AS student_count
     ";
 $result = mysqli_query($con, $q);
 ?>
-<h1>Colleges - <?php echo $result->num_rows ?></h1>
+<div id="page-content" class="col-sm-10 mt-5 text-center">
+    <h1>Colleges - <?php echo $result->num_rows ?></h1>
 
 
 
-<!-- table -->
-<p class="bg-dark text-white my-4 p-2">List of colleges</p>
+    <!-- table -->
+    <p class="bg-dark text-white my-4 p-2">List of colleges</p>
 
-<table id="myTable" class=" table table-striped table-hover">
-    <thead>
-        <tr>
-            <th class="col">ID</th>
-            <th class="col">Name</th>
-            <th class="col">Total Participant</th>
-            <th class="col">Action</th>
+    <table id="myTable" class=" table table-striped table-hover">
+        <thead>
+            <tr>
+                <th class="col">ID</th>
+                <th class="col">Name</th>
+                <th class="col">Total Participant</th>
+                <th class="col">Action</th>
 
-        </tr>
-    </thead>
-    <tbody>
-        <?php
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-        ?>
-                <tr>
-                    <th scope="row"><?php echo $row['id']; ?></th>
-                    <td><?php echo $row['name'] ?></td>
-                    <td><?php echo $row['student_count'] ?></td>
-                    <td>
-                        <form action="" class="d-inline" method="post">
-                            <input type="hidden" name="id" value="<?php echo $row['id'] ?>">
-                            <button type="submit" class="btn btn-primary mr-3" name="submit" value="submit"><i class="fas fa-pen"></i></button>
-                        </form>
-                        <form action="" class="d-inline" method="post">
-                            <input type="hidden" name="id" value="<?php echo $row['id'] ?>">
-                            
-                            <button type="submit" class="btn btn-danger" name="delete" value="Delete"><i class="far fa-trash-alt"></i></button>
-                        </form>
-                    </td>
-                </tr>
-
-            <?php }
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
             ?>
+                    <tr>
+                        <th scope="row"><?php echo $row['id']; ?></th>
+                        <td><?php echo $row['name'] ?></td>
+                        <td><?php echo $row['student_count'] ?></td>
+                        <td>
+                            <button type="button" class="btn btn-primary mr-3 updateCollegeBtn" data-toggle="modal" data-target="#updateCollegeModal" data-college-id="<?php echo $row['id'] ?>" data-college-name="<?php echo $row['name'] ?>"><i class="fas fa-pen"></i></button>
 
-    </tbody>
-</table>
+                            <form action="" class="d-inline" method="post">
+                                <input type="hidden" name="id" value="<?php echo $row['id'] ?>">
+
+                                <button type="submit" class="btn btn-danger" name="delete" value="Delete"><i class="far fa-trash-alt"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+
+                <?php }
+                ?>
+
+        </tbody>
+    </table>
 <?php
-        }
-       
-?>
+            }
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-danger box" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+?>
+<!-- upadate modal -->
+<div class="modal fade" id="updateCollegeModal" tabindex="-1" aria-labelledby="updateCollegeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateCollegeModalLabel">Update College</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="updateCollegeForm">
+                    <div class="form-group">
+                        <label for="updateCollegeName">New College Name:</label>
+                        <input type="text" class="form-control" id="updateCollegeName" name="collegeName">
+                        <input type="hidden" id="updateCollegeId" name="collegeId">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Button  modal -->
+<button type="button" class="btn btn-danger box" data-bs-toggle="modal" data-bs-target="#addcollege">
     <i class="fas fa-plus fa-2x"></i>
 </button>
-
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+</div>
+<!-- Modal for add college -->
+<div class="modal fade" id="addcollege" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -88,6 +119,11 @@ $result = mysqli_query($con, $q);
     </div>
 </div>
 
+
+<?php
+
+require_once("footer.php");
+?>
 <script>
     $(document).ready(function() {
         $('#myTable').DataTable();
@@ -151,7 +187,7 @@ $result = mysqli_query($con, $q);
                     url: 'collegeOperations.php', // PHP script URL that handles deleting college
                     data: {
                         id: collegeId,
-                        delete:'ok'
+                        delete: 'ok'
                     },
                     success: function(response) {
                         alert(response); // Show success message
@@ -164,7 +200,42 @@ $result = mysqli_query($con, $q);
                 });
             }
         });
-    });
 
-    
+        // Handle update college form submission
+        $('#updateCollegeForm').submit(function(event) {
+            event.preventDefault();
+
+            var collegeId = $('#updateCollegeId').val();
+            var newCollegeName = $('#updateCollegeName').val();
+
+            $.ajax({
+                type: 'POST',
+                url: 'collegeOperations.php', // PHP script URL that handles updating college
+                data: {
+                    collegeId: collegeId,
+                    collegeName: newCollegeName,
+                    update: 'ok'
+                },
+                success: function(response) {
+                    alert(response); // Show success message
+                    $('#updateCollegeModal').modal('hide'); // Hide the modal
+                    fetchColleges(); // Refresh colleges table
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText); // Log error message
+                    alert('An error occurred while updating college.'); // Show error message
+                }
+            });
+        });
+
+        // Handle update college button click event
+        $(document).on('click', '.updateCollegeBtn', function() {
+            event.preventDefault();
+            var collegeId = $(this).data('college-id');
+            var collegeName = $(this).data('college-name');
+
+            $('#updateCollegeId').val(collegeId);
+            $('#updateCollegeName').val(collegeName);
+        });
+    });
 </script>
