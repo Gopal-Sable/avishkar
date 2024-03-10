@@ -28,7 +28,7 @@
                         </a>
                     </li>
                     <li class="px-2  nav-item">
-                        <a href="Results.php" class="nav-link navigation">
+                        <a href="Results.php?action=registered" class="nav-link navigation">
                             <i class="fa-solid fa-trophy"></i>
                             <i class="px-2  fas fa-table"></i>winners
                         </a>

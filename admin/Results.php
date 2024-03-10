@@ -26,7 +26,7 @@ require_once("Navbar.php");
                 </select>
             </div>
             <div class="col-9 " style="width:450px;">
-                <h6><a class=`<?php echo $_GET['action'] == 'registered' ? "text-danger" : "" ?>` href="Results.php?action=registered"> Registered</a>
+                <h6><a href="Results.php?action=registered"> Registered</a>
                     > <a href="Results.php?action=selected">selected</a> >
                     <a href="Results.php?action=winners">Winners</a>
                 </h6>
@@ -36,7 +36,7 @@ require_once("Navbar.php");
     </div>
 
     <!-- table -->
-    <p class="bg-dark text-white my-4 p-2">List of <?php echo $_GET['action']?> projcts</p>
+    <p class="bg-dark text-white my-4 p-2">List of <?php echo $_GET['action'] ?> projcts</p>
     <?php
     $q =  " SELECT p.id, p.name , t.category
     FROM project p
@@ -47,38 +47,99 @@ require_once("Navbar.php");
     $result = mysqli_query($con, $q);
 
     ?>
-
-    <table id="myTable" class=" table table-striped table-hover table-bordered">
-        <thead>
-            <tr>
-                <th class="col">#</th>
-                <th class="col">Id</th>
-                <th class="col">Project Name</th>
-                <th class="col">Category</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php while ($row = $result->fetch_assoc()) {
-            ?>
+    <form id="myForm">
+        <table id="myTable" class=" table table-striped table-hover table-bordered">
+            <thead>
                 <tr>
-                    <th scope="row"><input type="checkbox" name="chkID" id="<?php echo $row['id'] ?>" value="<?php echo $row['id'] ?>"></th>
-                    <td><?php echo $row['id'] ?></td>
-                    <td><?php echo $row['name'] ?></td>
-                    <td><?php echo $row['category'] ?></td>
-
+                    <th class="col">#</th>
+                    <th class="col">Id</th>
+                    <th class="col">Project Name</th>
+                    <th class="col">Category</th>
                 </tr>
+            </thead>
+            <tbody>
+                <?php while ($row = $result->fetch_assoc()) {
+                ?>
+                    <tr>
+                        <th scope="row"><input type="checkbox" name="chkID" id="<?php echo $row['id'] ?>" value="<?php echo $row['id'] ?>"></th>
+                        <td><?php echo $row['id'] ?></td>
+                        <td><?php echo $row['name'] ?></td>
+                        <td><?php echo $row['category'] ?></td>
 
-            <?php }
-            ?>
-        </tbody>
-    </table>
+                    </tr>
 
-    <button class="btn btn-success">Send for next round</button>
+                <?php }
+                ?>
+            </tbody>
+        </table>
 
+        <!-- <button class="btn btn-success">Send for next round</button> -->
+        <?php if ($_GET['action'] != 'winners') {
+            echo "<button type='button' id='updateButton' value='" . $_GET['action'] . " ' class='btn btn-success'>Send For Next Round</button>";
+        }
+        if ($_GET['action'] != 'registered') {
+            echo "<button type='button' id='demoteButton' value='" . $_GET['action'] . " ' class='btn btn-danger'>Send Back To previous Round</button>";
+        }
+        ?>
+
+    </form>
 
     <script>
         $(document).ready(function() {
             $('#myTable').DataTable();
+
+            $('#updateButton').click(function() {
+                var selectedIDs = [];
+                $('input[name="chkID"]:checked').each(function() {
+                    selectedIDs.push($(this).val());
+                });
+                var resone = "update";
+                var btnvalue = $('#updateButton').val();
+                $.ajax({
+                    type: 'POST',
+                    url: 'update_result_data.php',
+                    data: {
+                        selectedIDs: selectedIDs,
+                        chktype: btnvalue,
+                        resone: resone
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        swal("Good job!", response, "success");
+                        // window.location.href = `Results.php?action=${btnvalue}`;
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+
+
+            $('#demoteButton').click(function() {
+                var selectedIDs = [];
+                $('input[name="chkID"]:checked').each(function() {
+                    selectedIDs.push($(this).val());
+                });
+                var resone = "demote";
+                var btnvalue = $('#demoteButton').val();
+                $.ajax({
+                    type: 'POST',
+                    url: 'update_result_data.php',
+                    data: {
+                        selectedIDs: selectedIDs,
+                        chktype: btnvalue,
+                        resone:resone
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        swal("Good job!", response, "success");
+                        // window.location.href = `Results.php?action=${btnvalue}`;
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
         });
     </script>
 </div>

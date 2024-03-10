@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="reg_styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        function toggleForm() {
+            event.preventDefault();
+            var studentForm = document.getElementById('student-form');
+            studentForm.style.display = studentForm.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <form id="registration-form" action="save-to-database.php" enctype="multipart/form-data"
+            method="POST">
+            <h2>Registration Form</h2>
+            <fieldset>
+                <legend>Genral info</legend>
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" >
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" >
+                </div>
+                <div class="form-group">
+                    <label for="mobile">Mobile no.:</label>
+                    <input type="number" id="mobile" name="mobile" >
+                </div>
+
+                <div class="form-group-radio">
+                    <label for="gender1">Gender:</label><br>
+                    <input type="radio" id="male1" name="gender1" value="male">
+                    <label for="male1">Male</label>
+
+                    <input type="radio" id="female1" name="gender1" value="female">
+                    <label for="female1">Female</label>
+
+                    <input type="radio" id="other1" name="gender1" value="other">
+                    <label for="other1">Other</label>
+                </div>
+
+                <div class="form-group">
+                    <label for="dob1">Date of Birth:</label>
+                    <input type="date" id="dob1" name="dob1" >
+                </div>
+                <div class="form-group-radio" id="level">
+
+                    <label for="level">Select Level:</label><br>
+
+                    <input type="radio" id="ug" class="level" name="level" value="1" >
+                    <label for="ug">UG</label>
+                    <input type="radio" id="pg" class="level" name="level" value="2" >
+                    <label for="pg">PG</label>
+                    <input type="radio" id="post_pg"  name="level" value="3" >
+                    <label for="post_pg">Post PG</label>
+
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Project Partner Info</legend>
+                <label for="name2">If project has Member Please Fill info</label>
+                <button onclick="toggleForm()">Add Student</button>
+                <div id="student-form" style="display: none;">
+                    <div class="form-group">
+                        <label for="name2">Name:</label>
+                        <input type="text" id="name2" name="name2" >
+                    </div>
+                    <div class="form-group">
+                        <label for="email2">Email:</label>
+                        <input type="email" id="email2" name="email2" >
+                    </div>
+                    <div class="form-group-radio">
+                        <label for="gender2">Gender:</label><br>
+                        <input type="radio" id="male2" name="gender2" value="male">
+                        <label for="male2">Male</label>
+
+                        <input type="radio" id="female2" name="gender2" value="female">
+                        <label for="female2">Female</label>
+
+                        <input type="radio" id="other2" name="gender2" value="other">
+                        <label for="other2">Other</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="dob2">Date of Birth:</label>
+                        <input type="date" id="dob2" name="dob2" >
+                    </div>
+                    
+                    <button type="button" onclick="toggleForm()">Reset</button>
+                </div>
+
+            </fieldset>
+            <!-- Dropdowns, radio buttons, checkboxes, and file upload -->
+            <fieldset>
+                <legend>Project info</legend>
+                <div class="form-group">
+                    <label for="name">Title of Project:</label>
+                    <input type="text" id="project_name" name="project_name" >
+                    <label for="theme">Select Theme:</label>
+                    <select id="theme" name="theme" >
+                        <option value="" selected>Select Theme</option>
+                        <option value="1">Humanities, Languages and Fine Arts</option>
+                        <option value="2">Commerce, Management and Law</option>
+                        <option value="3">Pure Sciences</option>
+                        <option value="4">Agriculture and Animal Husbandry</option>
+                        <option value="5">Engineering and Technology</option>
+                        <option value="6">Medicine and Pharmacy</option>
+                    </select>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Presentation Type</legend>
+
+                <div class="form-group-radio">
+                    <input type="radio" id="poster-only" name="present" value="Poster Only">
+                    <label for="poster-only">Poster Only</label>
+                </div>
+                <div class="form-group-radio">
+                    <input type="radio" id="model-with-poster" name="present" value="Model with Poster">
+                    <label for="model-with-poster">Model with Poster</label>
+                    <div id="checkboxes">
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="water" name="services" value="Water">
+                            <label for="water">Water</label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="electricity" name="services" value="Electricity">
+                            <label for="electricity">Electricity</label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="table" name="services" value="Table">
+                            <label for="table">Table</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="abstract">Upload Abstract:</label>
+                    <input type="file" id="abstract" name="abstract" accept=".pdf,.doc,.docx" >
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Other Info</legend>
+
+
+                <div class="form-group">
+                    <label for="name">Superwiser Name:</label>
+                    <input type="text" id="sup_name" name="sup_name" >
+                </div>
+                <div class="form-group">
+                    <label for="name">Superwiser Mobile no.:</label>
+                    <input type="number" id="sup_mobile" name="sup_mobile" >
+                </div>
+                <div class="form-group">
+                    <label for="email">Superwiser Email:</label>
+                    <input type="email" id="sup_email" name="sup_email" >
+                </div>
+            </fieldset>
+
+            
+            <button type="submit" name="submit" value="send">Submit</button>
+        </form>
+    </div>
+    <script src="script.js"></script>
+    
+
+
+</body>
+
+</html>

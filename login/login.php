@@ -34,7 +34,8 @@ if (!$con) {
         echo json_encode(1);
       } else {
         $_SESSION['is_admin'] = false;
-        $_SESSION['user'] =$user; //$result['collegeName'];
+        $_SESSION['user'] =$user; //$row['collegeName'];
+        $_SESSION['clgID']=1;//$row['id'];
         echo json_encode(1);
       }
     } else if ($row === 0) {
