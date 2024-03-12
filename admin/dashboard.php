@@ -8,7 +8,7 @@ require_once("header.php");
 require_once("Navbar.php");
 
 require_once('../connection.php');
-$q = "SELECT t.category, COUNT(s.id) AS student_count
+$q = "SELECT t.id, t.category, COUNT(s.id) AS student_count
 FROM student s
 JOIN project p ON s.project_id = p.id
 RIGHT JOIN themes t ON p.theme = t.id
@@ -29,7 +29,7 @@ $color_index = 0;
                     <div class="card-header"><?php echo $row['category']; ?></div>
                     <div class="card-body">
                         <h4 class="card-title"><?php echo $row['student_count']; ?></h4>
-                        <a href="#" class="btn text-white">View</a>
+                        <a href=<?php echo "students.php?theme=".$row['id']?> class="btn text-white">View</a>
                     </div>
                 </div>
             </div>

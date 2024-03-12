@@ -1,5 +1,5 @@
 $(document).ready(function () {
-   
+
     function isRadioSelected(name) {
         return $('input[name="' + name + '"]:checked').length > 0;
     }
@@ -10,10 +10,10 @@ $(document).ready(function () {
     function validateRadio() {
         if (!isRadioSelected('level')) {
             $('#level').append('<span id="levelerr" class="error">Please select a level.</span>');
-            return true;
+            return false;
         } else {
             $('#levelerr').remove();
-            return false;
+            return true;
         }
     }
 
@@ -22,12 +22,79 @@ $(document).ready(function () {
         validateRadio();
     });
     function validateForm() {
-        return true;
+        var isValid = true;
+
+        // Validate Name
+        var name = $('#name').val().trim();
+        if (name === '') {
+            $('#name').after('<span class="error">Please enter your name.</span>');
+            $('#name').focus();
+            isValid = false;
+        } else {
+            $('#name').siblings('.error').remove();
+        }
+
+        // Validate Email
+        var email = $('#email').val().trim();
+        if (email === '') {
+            $('#email').after('<span class="error">Please enter your email.</span>');
+            $('#email').focus();
+            isValid = false;
+        } else {
+            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                $('#email').after('<span class="error">Please enter a valid email address.</span>');
+                $('#email').focus();
+                isValid = false;
+            } else {
+                $('#email').siblings('.error').remove();
+            }
+        }
+
+        // Validate Mobile Number
+        var mobile = $('#mobile').val().trim();
+        if (mobile === '') {
+            $('#mobile').after('<span class="error">Please enter your mobile number.</span>');
+            $('#mobile').focus();
+            isValid = false;
+        } else {
+            var mobilePattern = /^\d{10}$/;
+            if (!mobilePattern.test(mobile)) {
+                $('#mobile').after('<span class="error">Please enter a valid 10-digit mobile number.</span>');
+                $('#mobile').focus();
+                isValid = false;
+            } else {
+                $('#mobile').siblings('.error').remove();
+            }
+        }
+
+        // Validate Radio Buttons
+        isValid = validateRadio() && isValid;
+
+        // Validate Checkbox
+        if (!$('input[name="services"]:checked').length) {
+            $('#checkboxes').after('<span class="error">Please select at least one service.</span>');
+            isValid = false;
+        } else {
+            $('#checkboxes').siblings('.error').remove();
+        }
+
+        // Validate Abstract File
+        var abstractFile = $('#abstract').prop('files')[0];
+        if (!abstractFile) {
+            $('#abstract').after('<span class="error">Please upload an abstract file.</span>');
+            isValid = false;
+        } else {
+            $('#abstract').siblings('.error').remove();
+        }
+
+        return isValid;
     }
+
 
     $('#registration-form').submit(function (event) {
         event.preventDefault();
-        if (true) {
+        if (validateForm()) {
             event.preventDefault();
             var formData = new FormData($('#registration-form')[0]);
 
@@ -60,8 +127,8 @@ $(document).ready(function () {
                 contentType: false,
                 success: function (response) {
                     // Handle success response
-                    console.log(response);
-                    alert('Form submitted successfully!');
+                    // console.log(response);
+                    alert(response);
                     // You can redirect the user or do any other action here
                 },
                 error: function (xhr, status, error) {
@@ -73,60 +140,21 @@ $(document).ready(function () {
         }
 
     });
+    // Validation on change for radio buttons
+    $('.level').on('change', function () {
+        validateRadio();
+    });
+
+    // Validation on change for checkboxes
+    $('input[name="services"]').on('change', function () {
+        if ($('input[name="services"]:checked').length > 0) {
+            $('#checkboxes').siblings('.error').remove();
+        }
+    });
 });
 
 
-// var error = false;
-// $('.error').remove();
 
-// // General Info Validation
-// var name = $('#name').val().trim();
-// if (name === '') {
-//     $('#name').after('<span class="error">Name is required.</span>');
-//     $("#name").focus();
-//     error = true;
-// }
-
-// var email = $('#email').val().trim();
-// if (email === '') {
-//     $('#email').after('<span class="error">Email is required.</span>');
-//     $("#email").focus();
-//     error = true;
-// }
-
-// var mobile = $('#mobile').val().trim();
-// if (mobile === '') {
-//     $('#mobile').after('<span class="error">Mobile no. is required.</span>');
-//     $("#mobile").focus();
-//     error = true;
-// }
-
-// // Project Partner Info Validation
-// if ($('#student-form').is(':visible')) {
-//     var name2 = $('#name2').val().trim();
-//     if (name2 === '') {
-//         $('#name2').after('<span class="error">Student Name is required.</span>');
-//         $("#name2").focus();
-//         error = true;
-//     }
-
-//     var email2 = $('#email2').val().trim();
-//     if (email2 === '') {
-//         $('#email2').after('<span class="error">Student Email is required.</span>');
-//         $("#email2").focus();
-//         error = true;
-//     }
-
-//     // Calculate age based on yesterday's date
-//     var dob1 = $('#dob1').val();
-//     var dob1Date = new Date(dob1);
-//     var yesterday = new Date('2024-03-08');
-//     yesterday.setDate(yesterday.getDate() - 1);
-//     var age = yesterday.getFullYear() - dob1Date.getFullYear();
-//     var monthDiff = yesterday.getMonth() - dob1Date.getMonth();
-//     if (monthDiff < 0 || (monthDiff === 0 && yesterday.getDate() < dob1Date.getDate())) {
-//         age--;
-//     }
 //     if (age > 25 && 1==getSelectedRadioValue('level')) {
 //         $('#dob1').after('<span class="error">Student should be below 25 years old.</span>');
 //         $("#dob1").focus();
@@ -136,17 +164,4 @@ $(document).ready(function () {
 //         $("#dob1").focus();
 //         error = true;
 //     }
-// }
-
-// error= validateRadio();
-// // Project Info Validation
-// var projectName = $('#project_name').val().trim();
-// if (projectName === '') {
-//     $('#project_name').after('<span class="error">Project Name is required.</span>');
-//     $('#projectName').focus();
-//     error = true;
-// }
-
-// if (error) {
-//     event.preventDefault();
 // }

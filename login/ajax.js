@@ -17,7 +17,7 @@ function Login() {
                 $('#LoginModal').modal('toggle');
                 setTimeout(() => {
                     if (email=='admin') {
-                        window.location.href = "../admin/index.php";
+                        window.location.href = "../admin/dashboard.php";
                     }else{
                         window.location.href = "../college/dashboard.php";
                     }

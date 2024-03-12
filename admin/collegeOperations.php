@@ -1,6 +1,10 @@
 <?php
 require_once('../connection.php');
-
+session_start();
+if (!isset($_SESSION['user']) || $_SESSION['is_admin'] != true) {
+    header("Location: ../login/login.html");
+    exit();
+}
 if (isset($_POST['add'])) {
     // Adding new college
     if (isset($_POST['college'])) {
@@ -59,7 +63,7 @@ if (isset($_POST['add'])) {
             echo "</tr>";
         }
     }
-}elseif (isset($_POST['delete'])) {
+} elseif (isset($_POST['delete'])) {
     // Deleting college
     // echo 'delete clicked';
     $collegeId = $_POST['id'];
@@ -99,7 +103,7 @@ if (isset($_POST['add'])) {
     $deleteCollegeStmt->close();
 }
 // Check if update request is submitted
-elseif(isset($_POST['update']) && $_POST['update'] == 'ok') {
+elseif (isset($_POST['update']) && $_POST['update'] == 'ok') {
     $collegeId = $_POST['collegeId'];
     $newCollegeName = $_POST['collegeName'];
 
@@ -107,7 +111,7 @@ elseif(isset($_POST['update']) && $_POST['update'] == 'ok') {
     $updateQuery = "UPDATE college SET name = '$newCollegeName' WHERE id = $collegeId";
     $updateResult = mysqli_query($con, $updateQuery);
 
-    if($updateResult) {
+    if ($updateResult) {
         echo "College updated successfully.";
     } else {
         echo "Error: " . mysqli_error($con);
@@ -115,5 +119,3 @@ elseif(isset($_POST['update']) && $_POST['update'] == 'ok') {
 
     exit(); // Terminate the script after processing update request
 }
-
-?>

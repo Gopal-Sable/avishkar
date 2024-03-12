@@ -8,21 +8,31 @@ require_once("header.php");
 require_once("Navbar.php");
 
 require_once('../connection.php');
-$q = "SELECT s.id, s.name AS student_name, c.name AS clg_name, l.name AS level_name, p.theme AS project_theme, t.category AS project_category
+if (isset($_GET['theme'])) {
+    $q = "SELECT s.id, s.name AS student_name, c.name AS clg_name, l.name AS level_name, p.theme AS project_theme, t.category AS project_category
 FROM student s
 LEFT JOIN college c ON s.college = c.id
 LEFT JOIN level l ON s.level = l.id
 LEFT JOIN project p ON s.project_id = p.id
-LEFT JOIN themes t ON p.theme = t.id; ";
+LEFT JOIN themes t ON p.theme = t.id 
+WHERE p.theme=" . $_GET['theme'];
+} else {
+    $q = "SELECT s.id, s.name AS student_name, c.name AS clg_name, l.name AS level_name, p.theme AS project_theme, t.category AS project_category
+FROM student s
+LEFT JOIN college c ON s.college = c.id
+LEFT JOIN level l ON s.level = l.id
+LEFT JOIN project p ON s.project_id = p.id
+LEFT JOIN themes t ON p.theme = t.id ";
+}
 $result = mysqli_query($con, $q);
 
-
+$temp=mysqli_query($con, $q);
 ?>
 <div id="page-content" class="col-sm-10 mt-5 text-center">
 
     <h1>students - <?php echo $result->num_rows ?></h1>
     <!-- table -->
-    <p class="bg-dark text-white my-4 p-2">List Of Students</p>
+    <p class="bg-dark text-white my-4 p-2">List Of Students For <?php echo isset($_GET['theme']) ? $temp->fetch_assoc()['project_category'] : "All" ?></p>
 
 
     <table id="myTable" class=" table table-striped table-responsive table-hover table-bordered">

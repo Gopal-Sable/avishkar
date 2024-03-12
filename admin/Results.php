@@ -47,7 +47,7 @@ require_once("Navbar.php");
     $result = mysqli_query($con, $q);
 
     ?>
-    <form id="myForm">
+    <form id="myForm" action="update_result_data.php" method="post">
         <table id="myTable" class=" table table-striped table-hover table-bordered">
             <thead>
                 <tr>
@@ -95,6 +95,12 @@ require_once("Navbar.php");
                 });
                 var resone = "update";
                 var btnvalue = $('#updateButton').val();
+                if ($('#updateButton').val() == "registered") {
+                    btnvalue = "selected";
+                } else {
+                    btnvalue = "winners";
+                }
+
                 $.ajax({
                     type: 'POST',
                     url: 'update_result_data.php',
@@ -106,7 +112,9 @@ require_once("Navbar.php");
                     success: function(response) {
                         console.log(response);
                         swal("Good job!", response, "success");
-                        // window.location.href = `Results.php?action=${btnvalue}`;
+                        setTimeout(function() {
+                            location.reload();
+                        }, 2000);
                     },
                     error: function(xhr, status, error) {
                         console.error(xhr.responseText);
@@ -122,17 +130,25 @@ require_once("Navbar.php");
                 });
                 var resone = "demote";
                 var btnvalue = $('#demoteButton').val();
+                if ($('#demoteButton').val() == "winners") {
+                    btnvalue = "selected";
+                } else {
+                    btnvalue = "registered";
+                }
                 $.ajax({
                     type: 'POST',
                     url: 'update_result_data.php',
                     data: {
                         selectedIDs: selectedIDs,
                         chktype: btnvalue,
-                        resone:resone
+                        resone: resone
                     },
                     success: function(response) {
                         console.log(response);
                         swal("Good job!", response, "success");
+                        setTimeout(function() {
+                            location.reload();
+                        }, 2000);
                         // window.location.href = `Results.php?action=${btnvalue}`;
                     },
                     error: function(xhr, status, error) {
